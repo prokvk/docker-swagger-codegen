@@ -1,0 +1,18 @@
+#!/bin/bash
+
+if [[ $# != 2 ]]; then
+	echo "ERROR: need 2 arguments, got $#" && exit 1
+fi
+
+SRCSWAGGERFILE=$1
+SRCDOCFOLDER=$2
+WORKDIR=/.cache
+DESTSWAGGERFILE=$WORKDIR/$(basename $SRCSWAGGERFILE)
+DESTDOCFOLDER=$WORKDIR/doc
+
+IMAGE=swagger_codegen
+PARAMS="-v $SRCSWAGGERFILE:$DESTSWAGGERFILE \
+		-v $SRCDOCFOLDER:$DESTDOCFOLDER"
+
+docker run --rm --name $IMAGE --user 1000 $PARAMS $IMAGE \
+	java -jar swagger-codegen-cli-2.2.1.jar generate -i $DESTSWAGGERFILE -l html2 -o $DESTDOCFOLDER
